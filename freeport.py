@@ -39,17 +39,7 @@ for pid in pids_int:
     processType = subprocess.check_output(processTypeCmd, shell=True, text=True).rstrip('\n')
     confirm = ''
     if processType:
-        while True:
-            try:
-                confirm = raw_input("Process Type: '{0}'  Port: {1}. Kill?[y/n]".format(processType, port))
-            except NameError:
-                confirm = input("Process Type: '{0}'  Port: {1}. Kill?[y/n]".format(processType, port))
 
-            confirm = confirm.lower()
-            if confirm == 'y' or confirm == 'n':
-                break
-
-    if confirm == 'yes':
         userCmd = 'ps -o user= -p {}'.format(pid)
         user = subprocess.check_output(userCmd, shell=True, text=True).rstrip('\n')
         if user.lower() == "root":
@@ -61,5 +51,3 @@ for pid in pids_int:
             print("Port {0} is free. Processs {1} killed successfully".format(port, pid))
         else:
             print("Cannot free port {0}.Failed to kill process {1}, err code:{2}".format(port, pid, isKilled))
-    elif confirm == 'no':
-        print("Skip killing process type {0} on port {1}".format(processType, port))
