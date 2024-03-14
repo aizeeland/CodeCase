@@ -19,7 +19,7 @@ if args.camera == 1:
 
 # Create a socket server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(('localhost', port)) # Bind to localhost
+server_socket.bind(('192.168.16.210', port)) # Bind to localhost
 server_socket.listen(1)
 
 print('Server started. Waiting for connections...')
