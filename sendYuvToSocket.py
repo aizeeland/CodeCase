@@ -19,14 +19,14 @@ if args.camera == 1:
 
 # Create a socket server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(('192.168.16.210', port)) # Bind to localhost
+server_socket.bind(('localhost', port)) # Bind to localhost
 server_socket.listen(1)
 
 print('Server started. Waiting for connections...')
 
 # Accept a connection
 client_socket, addr = server_socket.accept()
-if addr[0] != 'your_client_ip':
+if addr[0] != '192.168.16.210':
     print('Connection from unexpected client: ', addr)
     client_socket.close()
     continue
