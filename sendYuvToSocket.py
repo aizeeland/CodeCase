@@ -26,7 +26,7 @@ print('Server started. Waiting for connections...')
 
 # Accept a connection
 client_socket, addr = server_socket.accept()
-if addr[0] != 'your_client_ip':
+if addr[0] != '192.168.16.210':
     print('Connection from unexpected client: ', addr)
     client_socket.close()
 else:
