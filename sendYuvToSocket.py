@@ -31,6 +31,7 @@ if addr[0] != 'your_client_ip':
     client_socket.close()
 else:
     print('Client connected: ', addr)
+    time.sleep(5)
 
 # Continuously check the directory for new .yuv420 files
 while True:
