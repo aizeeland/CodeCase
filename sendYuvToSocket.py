@@ -55,7 +55,7 @@ while True:
         os.remove(os.path.join(image_dir, filename))
 
     # Wait for a second before checking the directory again
-    time.sleep(1)
+    # time.sleep(1)
 
 # Close the sockets
 client_socket.close()
