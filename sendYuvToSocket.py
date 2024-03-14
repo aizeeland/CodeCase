@@ -26,6 +26,10 @@ print('Server started. Waiting for connections...')
 
 # Accept a connection
 client_socket, addr = server_socket.accept()
+if addr[0] != 'your_client_ip':
+    print('Connection from unexpected client: ', addr)
+    client_socket.close()
+    continue
 print('Client connected: ', addr)
 
 # Continuously check the directory for new .yuv420 files
