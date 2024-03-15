@@ -41,7 +41,7 @@ while True:
         break
 
     # Get a sorted list of .data files
-    filenames = sorted(filename for filename in os.listdir(image_dir) if filename.endswith('.yuv420'))
+    filenames = sorted(filename for filename in os.listdir(image_dir) if filename.endswith('.png'))
 
     for filename in filenames:
         # Read the file as binary data
