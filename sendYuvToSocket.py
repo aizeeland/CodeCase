@@ -51,7 +51,7 @@ while True:
             byte_array = f.read()
 
         # First send the size of the img
-        client_socket.send(struct.pack('!I', len(byte_array))
+        client_socket.send(struct.pack('!I', len(byte_array)))
 
         # Send the byte array over the socket
         client_socket.send(byte_array)
