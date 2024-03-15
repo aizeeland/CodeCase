@@ -6,8 +6,12 @@ import argparse
 import glob
 import struct
 
+# Bitsequence = start marker -> image size -> actual image + EOI marker
+
+# Start of bitsequence marker
+START_MARKER = b'\x00\x00\x00\x00\x00\x00\x00\x00'  # 8 zero bytes
 # End of image marker
-EOI_MARKER = b'EOI'
+EOI_MARKER = b'EOI
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Start a socket server and send .yuv420 files.')
@@ -55,7 +59,10 @@ while True:
 
         byte_array += EOI_MARKER
 
-        # First send the size of the img
+        # Send start marker first
+        client_socket.send(START_MARKER)
+        
+        # Send the size of the img
         client_socket.send(struct.pack('!I', len(byte_array)))
 
         # Send the byte array over the socket
