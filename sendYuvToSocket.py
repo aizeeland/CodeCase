@@ -3,6 +3,8 @@ import time
 import socket
 import subprocess
 import argparse
+import glob
+import struct
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Start a socket server and send .yuv420 files.')
@@ -48,6 +50,9 @@ while True:
         with open(os.path.join(image_dir, filename), 'rb') as f:
             byte_array = f.read()
 
+        # First send the size of the img
+        client_socket.send(struct.pack('!I', len(byte_array))
+
         # Send the byte array over the socket
         client_socket.send(byte_array)
 
@@ -55,7 +60,7 @@ while True:
         os.remove(os.path.join(image_dir, filename))
 
     # Wait for a second before checking the directory again
-    # time.sleep(1)
+    time.sleep(1)
 
 
 # Close the sockets and kill rpicam-still
