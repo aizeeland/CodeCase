@@ -57,8 +57,11 @@ while True:
     # Wait for a second before checking the directory again
     # time.sleep(1)
 
+
 # Close the sockets and kill rpicam-still
-print('Closing sockets and killing rpicam-still...')
+print('Closing sockets, killing rpicam-still and clearing ports...')
 client_socket.close()
 server_socket.close()
 subprocess.run(['pkill', '-x', 'rpicam-still'])
+subprocess.Popen(["python3", "CodeCase/freeport.py", "8888"])
+subprocess.Popen(["python3", "CodeCase/freeport.py", "7777"])
