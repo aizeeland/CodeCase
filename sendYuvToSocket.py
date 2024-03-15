@@ -6,6 +6,9 @@ import argparse
 import glob
 import struct
 
+# End of image marker
+EOI_MARKER = b'EOI'
+
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Start a socket server and send .yuv420 files.')
 parser.add_argument('camera', type=int, help='The camera number to use for the socket server.')
@@ -49,6 +52,8 @@ while True:
         # Read the file as binary data
         with open(os.path.join(image_dir, filename), 'rb') as f:
             byte_array = f.read()
+
+        byte_array += EOI_MARKER
 
         # First send the size of the img
         client_socket.send(struct.pack('!I', len(byte_array)))
