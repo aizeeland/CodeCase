@@ -9,7 +9,7 @@ import struct
 # Bitsequence = image size -> actual image + EOI marker
 
 # End of image marker
-EOI_MARKER = b'EOI
+EOI_MARKER = b'EOI'
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Start a socket server and send .yuv420 files.')
