@@ -53,8 +53,8 @@ while True:
         break
 
     # Get a sorted list of .data files
-    filenames = sorted(filename for filename in os.listdir(image_dir) if filename.endswith('.png'))
-
+    filenames = sorted((filename for filename in os.listdir(image_dir) if filename.endswith('.png')), reverse=True)
+    
     # Do not loop over filenames if there aren't at least 2 filenames
     if len(filenames) < 2:
         continue
