@@ -55,13 +55,17 @@ while True:
     # Get a sorted list of .data files
     filenames = sorted(filename for filename in os.listdir(image_dir) if filename.endswith('.png'))
 
+    # Do not loop over filenames if there aren't at least 2 filenames
+    if len(filenames) < 2:
+        continue
+
     for filename in filenames:
         # Read the file as binary data
         with open(os.path.join(image_dir, filename), 'rb') as f:
             byte_array = f.read()
 
         if not is_png_complete(byte_array):
-            continue
+            break
 
         byte_array += EOI_MARKER
         
