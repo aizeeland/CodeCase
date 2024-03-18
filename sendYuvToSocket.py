@@ -6,6 +6,11 @@ import argparse
 import glob
 import struct
 
+def is_png_complete(data):
+    # IEND_CHUNK is how binary .png data ends
+    IEND_CHUNK = b'\x00\x00\x00\x00\x49\x45\x4E\x44\xAE\x42\x60\x82'
+    return data[-12:] == IEND_CHUNK
+
 # Bitsequence = image size -> actual image + EOI marker
 
 # End of image marker
@@ -54,6 +59,9 @@ while True:
         # Read the file as binary data
         with open(os.path.join(image_dir, filename), 'rb') as f:
             byte_array = f.read()
+
+        if not is_png_complete(byte_array):
+            continue
 
         byte_array += EOI_MARKER
         
