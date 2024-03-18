@@ -6,10 +6,8 @@ import argparse
 import glob
 import struct
 
-# Bitsequence = start marker -> image size -> actual image + EOI marker
+# Bitsequence = image size -> actual image + EOI marker
 
-# Start of bitsequence marker
-START_MARKER = b'\x00\x00\x00\x00\x00\x00\x00\x00'  # 8 zero bytes
 # End of image marker
 EOI_MARKER = b'EOI
 
@@ -58,9 +56,6 @@ while True:
             byte_array = f.read()
 
         byte_array += EOI_MARKER
-
-        # Send start marker first
-        client_socket.send(START_MARKER)
         
         # Send the size of the img
         client_socket.send(struct.pack('!I', len(byte_array)))
