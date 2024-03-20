@@ -48,14 +48,20 @@ if addr[0] != '192.168.16.210':
 else:
     print('Client connected: ', addr)
 
-    # Remove any remaining pictures
+    # Remove any remaining pictures in 'camera0data'
     os.chdir('camera0data')
-    subprocess.Popen(['rm', '*'])
+    files = glob.glob('*')
+    for f in files:
+        os.remove(f)
     
+    # Remove any remaining pictures in 'camera1data'
     os.chdir('../camera1data')
-    subprocess.Popen(['rm', '*'])
+    files = glob.glob('*')
+    for f in files:
+        os.remove(f)
 
-    os.chrdir('../')
+    # Change the current working directory back to the parent directory
+    os.chdir('../')
     
     # Start making still images
     if args.camera == 0:
