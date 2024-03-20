@@ -48,9 +48,9 @@ else:
     print('Client connected: ', addr)
     # Start making still images
     if args.camera == 0:
-        subprocess.Popen(["rpicam-still --datetime -t 0 --camera 0 -e png -o camera0data --timelapse 1000 --width 4056 --height 3040"])
+        subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040"])
     if args.camera == 1:
-        subprocess.Popen(["rpicam-still --datetime -t 0 --camera 1 -e png -o camera1data --timelapse 1000 --width 4056 --height 3040"])
+        subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "1", "-e", "png", "-o", "camera1data", "--timelapse", "1000", "--width", "4056", "--height", "3040"])
     time.sleep(5)
 
 # Continuously check the directory for new files
