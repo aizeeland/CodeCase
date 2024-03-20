@@ -32,12 +32,14 @@ args = parser.parse_args()
 
 # Clear existing data and port and start making new images
 if args.camera == 0:
+    subprocess.run(["python3", "CodeCase/freeport.py", "8888"], capture_output=False, text=False)
     image_dir = 'camera0data'
     port = 8888
     clear_folder(image_dir)
     subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040"])
     
 if args.camera == 1:
+    subprocess.run(["python3", "CodeCase/freeport.py", "7777"], capture_output=False, text=False)
     image_dir = 'camera1data'
     port = 7777
     clear_folder(image_dir)
