@@ -7,6 +7,8 @@ import glob
 import struct
 import subprocess
 
+connection_error = False
+
 def is_png_complete(data):
     # IEND_CHUNK is how binary .png data ends
     IEND_CHUNK = b'\x00\x00\x00\x00\x49\x45\x4E\x44\xAE\x42\x60\x82'
@@ -58,7 +60,7 @@ while True:
         print('rpicam-still is no longer running. Stopping...')
         break
 
-    # Get a sorted list of .data files
+    # Get a sorted list of files
     filenames = sorted((filename for filename in os.listdir(image_dir) if filename.endswith('.png')))
     
     # Do not loop over filenames if there aren't at least 2 filenames
@@ -75,18 +77,24 @@ while True:
             continue
     
         byte_array += EOI_MARKER
+        try:
+            # Send the size of the img
+            client_socket.send(struct.pack('!I', len(byte_array)))
         
-        # Send the size of the img
-        client_socket.send(struct.pack('!I', len(byte_array)))
-    
-        # Send the byte array over the socket
-        client_socket.send(byte_array)
+            # Send the byte array over the socket
+            client_socket.send(byte_array)
+            
+        except (BrokenPipeError, ConnectionResetError):
+            connection_error = True
+            break
         
-        # Remove after sending
         os.remove(os.path.join(image_dir, filename))
     
         # Wait for a second before checking the directory again
         #time.sleep(1)
+    
+    if connection_error:
+        break
 
 
 # Close the sockets and kill rpicam-still
