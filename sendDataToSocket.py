@@ -23,10 +23,10 @@ args = parser.parse_args()
 
 # Directory to watch for new YUV images
 if args.camera == 0:
-    image_dir = 'camera0yuv420'
+    image_dir = 'camera0data'
     port = 8888
 if args.camera == 1:
-    image_dir = 'camera1yuv420'
+    image_dir = 'camera1data'
     port = 7777
 
 # Create a socket server
