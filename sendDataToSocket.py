@@ -47,21 +47,6 @@ if addr[0] != '192.168.16.210':
     
 else:
     print('Client connected: ', addr)
-
-    # Remove any remaining pictures in 'camera0data'
-    os.chdir('camera0data')
-    files = glob.glob('*')
-    for f in files:
-        os.remove(f)
-    
-    # Remove any remaining pictures in 'camera1data'
-    os.chdir('../camera1data')
-    files = glob.glob('*')
-    for f in files:
-        os.remove(f)
-
-    # Change the current working directory back to the parent directory
-    os.chdir('../')
     
     # Start making still images
     if args.camera == 0:
