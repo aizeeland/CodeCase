@@ -56,32 +56,28 @@ while True:
     filenames = sorted((filename for filename in os.listdir(image_dir) if filename.endswith('.png')), reverse=True)
     
     # Do not loop over filenames if there aren't at least 2 filenames
-    if len(filenames) < 2:
-        continue
-
-    for filename in filenames:
-        # Read the file as binary data
-        with open(os.path.join(image_dir, filename), 'rb') as f:
-            byte_array = f.read()
-
-        if not is_png_complete(byte_array):
-            break
-
-        byte_array += EOI_MARKER
-        try:
-            # Send the size of the img
-            client_socket.send(struct.pack('!I', len(byte_array)))
+    # if len(filenames) < 2:
+    #   continue
     
-            # Send the byte array over the socket
-            client_socket.send(byte_array)
+    if not is_png_complete(byte_array):
+        continue
+        
+    filename = filenames[0]
+    
+    # Read the file as binary data
+    with open(os.path.join(image_dir, filename), 'rb') as f:
+        byte_array = f.read()
 
-        except (BrokenPipeError, ConnectionResetError):
-            print("Connction lost, clearing dir")
-            for folder in ['camera0data, camera1data']:
-                files = glob.glob(f'{folder}/*')
-                for f in files:
-                    os.remove(f)
-        # Remove the file after sending it
+    byte_array += EOI_MARKER
+    
+    # Send the size of the img
+    client_socket.send(struct.pack('!I', len(byte_array)))
+
+    # Send the byte array over the socket
+    client_socket.send(byte_array)
+
+    # Remove all files after sending to free space + ensure latest images
+    for filename in filenames:
         os.remove(os.path.join(image_dir, filename))
 
     # Wait for a second before checking the directory again
