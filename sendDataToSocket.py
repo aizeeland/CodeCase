@@ -14,6 +14,11 @@ def is_png_complete(data):
     IEND_CHUNK = b'\x00\x00\x00\x00\x49\x45\x4E\x44\xAE\x42\x60\x82'
     return data[-12:] == IEND_CHUNK
 
+def clear_folder(folder):
+    files = glob.glob(f'{image_dir}/*')
+    for f in files:
+        os.remove(f)
+
 # Bitsequence = image size -> actual image + EOI marker
 
 # End of image marker
@@ -23,14 +28,7 @@ EOI_MARKER = b'EOI'
 parser = argparse.ArgumentParser(description='Start a socket server and send .yuv420 files.')
 parser.add_argument('camera', type=int, help='The camera number to use for the socket server.')
 args = parser.parse_args()
-
-# Directory to watch for new YUV images
-if args.camera == 0:
-    image_dir = 'camera0data'
-    port = 8888
-if args.camera == 1:
-    image_dir = 'camera1data'
-    port = 7777
+    
 
 # Create a socket server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,10 +46,19 @@ if addr[0] != '192.168.16.210':
 else:
     print('Client connected: ', addr)
     
-    # Start making still images
+    # Clear existing data and port and start making new images
     if args.camera == 0:
+        image_dir = 'camera0data'
+        subprocess.Popen(["python3", "CodeCase/freeport.py 8888"]) 
+        port = 8888
+        clear_folder(image_dir)
         subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040"])
+        
     if args.camera == 1:
+        image_dir = 'camera1data'
+        subprocess.Popen(["python3", "CodeCase/freeport.py 7777"]) 
+        port = 7777
+        clear_folder(image_dir)
         subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "1", "-e", "png", "-o", "camera1data", "--timelapse", "1000", "--width", "4056", "--height", "3040"])
     time.sleep(5)
 
@@ -102,13 +109,7 @@ while True:
         server_socket.close()
         subprocess.run(['pkill', '-x', 'rpicam-still'])
         subprocess.Popen(["python3", "CodeCase/freeport.py", "8888"])
-        subprocess.Popen(["python3", "CodeCase/freeport.py", "7777"])
-
-        # Clear any pictures left in folder
-        files = glob.glob(f'{image_dir}/*')
-        for f in files:
-            os.remove(f)
-            
+        subprocess.Popen(["python3", "CodeCase/freeport.py", "7777"])        
         break
         
 
