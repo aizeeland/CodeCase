@@ -68,13 +68,19 @@ while True:
             break
 
         byte_array += EOI_MARKER
-        
-        # Send the size of the img
-        client_socket.send(struct.pack('!I', len(byte_array)))
+        try:
+            # Send the size of the img
+            client_socket.send(struct.pack('!I', len(byte_array)))
+    
+            # Send the byte array over the socket
+            client_socket.send(byte_array)
 
-        # Send the byte array over the socket
-        client_socket.send(byte_array)
-
+        except (BrokenPipeError, ConnectionResetError):
+            print("Connction lost, clearing dir")
+            for folder in ['camera0data, camera1data']:
+                files = glob.glob(f'{folder}/*')
+                for f in files:
+                    os.remove(f)
         # Remove the file after sending it
         os.remove(os.path.join(image_dir, filename))
 
@@ -89,10 +95,3 @@ server_socket.close()
 subprocess.run(['pkill', '-x', 'rpicam-still'])
 subprocess.Popen(["python3", "CodeCase/freeport.py", "8888"])
 subprocess.Popen(["python3", "CodeCase/freeport.py", "7777"])
-
-# Clear the contents of the camera0yuv420 and camera1yuv420 directories
-for folder in ['camera0yuv420', 'camera1yuv420']:
-    files = glob.glob(f'{folder}/*')
-    for f in files:
-        os.remove(f)
-
