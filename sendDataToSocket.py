@@ -101,5 +101,12 @@ while True:
         subprocess.run(['pkill', '-x', 'rpicam-still'])
         subprocess.Popen(["python3", "CodeCase/freeport.py", "8888"])
         subprocess.Popen(["python3", "CodeCase/freeport.py", "7777"])
+
+        # Clear any pictures left in folder
+        files = glob.glob(f'{image_dir}/*')
+        for f in files:
+            os.remove(f)
+            
         break
+        
 
