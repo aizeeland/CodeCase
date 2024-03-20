@@ -5,6 +5,7 @@ import subprocess
 import argparse
 import glob
 import struct
+import subprocess
 
 def is_png_complete(data):
     # IEND_CHUNK is how binary .png data ends
@@ -43,9 +44,14 @@ if addr[0] != '192.168.16.210':
     client_socket.close()
 else:
     print('Client connected: ', addr)
+    # Start making still images
+    if args.camera == 0:
+        subprocess.Popen(["rpicam-still --datetime -t 0 --camera 0 -e png -o camera0data --timelapse 1000 --width 4056 --height 3040"])
+    if args.camera == 1:
+        subprocess.Popen(["rpicam-still --datetime -t 0 --camera 1 -e png -o camera1data --timelapse 1000 --width 4056 --height 3040"])
     time.sleep(5)
 
-# Continuously check the directory for new .yuv420 files
+# Continuously check the directory for new files
 while True:
     # Check if the rpicam-still program is running
     if subprocess.run(['pgrep', '-x', 'rpicam-still'], stdout=subprocess.DEVNULL).returncode != 0:
@@ -53,35 +59,34 @@ while True:
         break
 
     # Get a sorted list of .data files
-    filenames = sorted((filename for filename in os.listdir(image_dir) if filename.endswith('.png')), reverse=True)
+    filenames = sorted((filename for filename in os.listdir(image_dir) if filename.endswith('.png')))
     
     # Do not loop over filenames if there aren't at least 2 filenames
     if len(filenames) < 2:
         continue
-    
-    if not is_png_complete(byte_array):
-        continue
         
-    filename = filenames[0]
+    for filename in filenames:
     
-    # Read the file as binary data
-    with open(os.path.join(image_dir, filename), 'rb') as f:
-        byte_array = f.read()
+        # Read the file as binary data
+        with open(os.path.join(image_dir, filename), 'rb') as f:
+            byte_array = f.read()
 
-    byte_array += EOI_MARKER
+        if not is_png_complete(byte_array):
+        continue
     
-    # Send the size of the img
-    client_socket.send(struct.pack('!I', len(byte_array)))
-
-    # Send the byte array over the socket
-    client_socket.send(byte_array)
-
-    # Remove older files after sending to free space + ensure latest images
-    for filename in filenames[1:]:
+        byte_array += EOI_MARKER
+        
+        # Send the size of the img
+        client_socket.send(struct.pack('!I', len(byte_array)))
+    
+        # Send the byte array over the socket
+        client_socket.send(byte_array)
+        
+        # Remove after sending
         os.remove(os.path.join(image_dir, filename))
-
-    # Wait for a second before checking the directory again
-    #time.sleep(1)
+    
+        # Wait for a second before checking the directory again
+        #time.sleep(1)
 
 
 # Close the sockets and kill rpicam-still
