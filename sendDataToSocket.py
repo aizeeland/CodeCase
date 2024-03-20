@@ -56,8 +56,8 @@ while True:
     filenames = sorted((filename for filename in os.listdir(image_dir) if filename.endswith('.png')), reverse=True)
     
     # Do not loop over filenames if there aren't at least 2 filenames
-    # if len(filenames) < 2:
-    #   continue
+    if len(filenames) < 2:
+        continue
     
     if not is_png_complete(byte_array):
         continue
@@ -76,8 +76,8 @@ while True:
     # Send the byte array over the socket
     client_socket.send(byte_array)
 
-    # Remove all files after sending to free space + ensure latest images
-    for filename in filenames:
+    # Remove older files after sending to free space + ensure latest images
+    for filename in filenames[1:]:
         os.remove(os.path.join(image_dir, filename))
 
     # Wait for a second before checking the directory again
