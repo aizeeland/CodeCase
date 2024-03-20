@@ -44,8 +44,19 @@ client_socket, addr = server_socket.accept()
 if addr[0] != '192.168.16.210':
     print('Connection from unexpected client: ', addr)
     client_socket.close()
+    
 else:
     print('Client connected: ', addr)
+
+    # Remove any remaining pictures
+    os.chdir('camera0data')
+    subprocess.Popen(['rm', '*'])
+    
+    os.chdir('../camera1data')
+    subprocess.Popen(['rm', '*'])
+
+    os.chrdir('../')
+    
     # Start making still images
     if args.camera == 0:
         subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040"])
