@@ -72,7 +72,7 @@ while True:
             byte_array = f.read()
 
         if not is_png_complete(byte_array):
-        continue
+            continue
     
         byte_array += EOI_MARKER
         
