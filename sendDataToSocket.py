@@ -15,7 +15,7 @@ def is_png_complete(data):
     return data[-12:] == IEND_CHUNK
 
 def clear_folder(folder):
-    files = glob.glob(f'{image_dir}/*')
+    files = glob.glob(f'{image_dir}/*.png')
     for f in files:
         os.remove(f)
 
