@@ -36,14 +36,14 @@ if args.camera == 0:
     image_dir = 'camera0data'
     port = 8888
     clear_folder(image_dir)
-    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off"])
+    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off", "--gain", "1"])
     
 if args.camera == 1:
     subprocess.run(["python3", "CodeCase/freeport.py", "7777"], capture_output=False, text=False)
     image_dir = 'camera1data'
     port = 7777
     clear_folder(image_dir)
-    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "1", "-e", "png", "-o", "camera1data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off"])
+    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "1", "-e", "png", "-o", "camera1data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off",  "--gain", "1"])
 
 # Create a socket server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
