@@ -24,6 +24,13 @@ def clear_folder(folder):
 # End of image marker
 EOI_MARKER = b'EOI'
 
+# Camera settings
+camera_settings = {
+    "width":4056,
+    "height":3040,
+    "shutter":20000
+}
+
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Start a socket server and send .yuv420 files.')
 parser.add_argument('camera', type=int, help='The camera number to use for the socket server.')
@@ -36,14 +43,14 @@ if args.camera == 0:
     image_dir = 'camera0data'
     port = 8888
     clear_folder(image_dir)
-    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off", "--shutter", "20000"])
+    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "0", "-e", "png", "-o", "camera0data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off", "--shutter", str(camera_settings['shutter'])])
     
 if args.camera == 1:
     subprocess.run(["python3", "CodeCase/freeport.py", "7777"], capture_output=False, text=False)
     image_dir = 'camera1data'
     port = 7777
     clear_folder(image_dir)
-    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "1", "-e", "png", "-o", "camera1data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off",  "--shutter", "20000"])
+    subprocess.Popen(["rpicam-still", "--datetime", "-t", "0", "--camera", "1", "-e", "png", "-o", "camera1data", "--timelapse", "1000", "--width", "4056", "--height", "3040", "--denoise", "off",  "--shutter", str(camera_settings['shutter'])])
 
 # Create a socket server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -89,6 +96,10 @@ while True:
         try:
             # Send the size of the img
             client_socket.send(struct.pack('!I', len(byte_array)))
+
+            # Send metadata
+            for metadata in camera_settings.values():
+                client_socket.send(struct.pack('!I', metadata)) 
         
             # Send the byte array over the socket
             client_socket.send(byte_array)
