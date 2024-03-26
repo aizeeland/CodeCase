@@ -28,7 +28,7 @@ EOI_MARKER = b'EOI'
 camera_settings = {
     "width":4056,
     "height":3040,
-    "shutter":20000
+    "shutter":10000
 }
 
 # Parse command line arguments
